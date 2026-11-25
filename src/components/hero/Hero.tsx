@@ -18,10 +18,10 @@ import {
 const Hero3D = dynamic(() => import("./Hero3D"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[400px] sm:h-[480px] lg:h-[550px] flex items-center justify-center">
-      <div className="w-48 h-48 rounded-full border border-cyan-500/20 animate-pulse-slow flex items-center justify-center">
+    <div className="w-full h-[460px] sm:h-[520px] lg:h-[580px] flex items-center justify-center">
+      <div className="w-64 h-64 rounded-3xl border border-cyan-500/20 bg-surface/40 animate-pulse-slow flex items-center justify-center">
         <span className="font-mono text-xs text-cyan-400/60 tracking-wider">
-          INITIALIZING 3D CORE...
+          INITIALIZING 3D PORTRAIT...
         </span>
       </div>
     </div>
@@ -159,7 +159,7 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Right Column: Interactive 3D Hero */}
+        {/* Right Column: 3D Floating Portrait */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -169,7 +169,7 @@ export default function Hero() {
           {/* Subtle top indicator */}
           <div className="absolute top-2 right-4 z-20 hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/80 border border-white/10 backdrop-blur-md text-[11px] font-mono text-muted-foreground">
             <Sparkles className="w-3 h-3 text-cyan-400" />
-            <span>Interactive 3D Core</span>
+            <span>Interactive 3D Portrait</span>
           </div>
 
           <Hero3D />

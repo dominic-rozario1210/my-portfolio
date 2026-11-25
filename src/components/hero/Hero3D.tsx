@@ -1,83 +1,70 @@
 "use client";
 
 import React, { useRef, useMemo, useEffect, useState } from "react";
+import Image from "next/image";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import * as THREE from "three";
+import { Sparkles, Terminal, ShieldCheck } from "lucide-react";
 
-// Interactive 3D Geodesic Core
-function GeodesicSphere({ mouse }: { mouse: React.MutableRefObject<[number, number]> }) {
-  const meshRef = useRef<THREE.Group>(null);
-  const wireframeRef = useRef<THREE.Mesh>(null);
-  const coreRef = useRef<THREE.Mesh>(null);
+// 3D Orbital Rings System
+function OrbitalRings({ mouse }: { mouse: React.MutableRefObject<[number, number]> }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
 
-  // Subtle floating and rotation animation with mouse responsiveness
-  useFrame((state, delta) => {
-    if (!meshRef.current) return;
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
 
-    // Base rotation
-    meshRef.current.rotation.y += delta * 0.25;
-    meshRef.current.rotation.x += delta * 0.15;
-
-    // Mouse parallax tilt
-    const targetX = (mouse.current[1] * Math.PI) / 8;
-    const targetY = (mouse.current[0] * Math.PI) / 8;
-
-    meshRef.current.rotation.x = THREE.MathUtils.lerp(
-      meshRef.current.rotation.x,
-      meshRef.current.rotation.x + targetX * 0.05,
-      0.05
-    );
-    meshRef.current.rotation.y = THREE.MathUtils.lerp(
-      meshRef.current.rotation.y,
-      meshRef.current.rotation.y + targetY * 0.05,
-      0.05
-    );
-
-    // Pulse core
-    if (coreRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.04;
-      coreRef.current.scale.set(scale, scale, scale);
+    // Smooth base rotation
+    if (ring1Ref.current) {
+      ring1Ref.current.rotation.z += delta * 0.25;
+      ring1Ref.current.rotation.x += delta * 0.12;
     }
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.z -= delta * 0.2;
+      ring2Ref.current.rotation.y += delta * 0.15;
+    }
+    if (ring3Ref.current) {
+      ring3Ref.current.rotation.x -= delta * 0.15;
+      ring3Ref.current.rotation.z += delta * 0.1;
+    }
+
+    // Mouse parallax tilt for rings
+    const targetX = (mouse.current[1] * Math.PI) / 10;
+    const targetY = (mouse.current[0] * Math.PI) / 10;
+
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      targetX,
+      0.05
+    );
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      targetY,
+      0.05
+    );
   });
 
   return (
-    <group ref={meshRef}>
-      {/* Outer Geodesic Wireframe Shell */}
-      <mesh ref={wireframeRef}>
-        <icosahedronGeometry args={[2.0, 2]} />
-        <meshStandardMaterial
-          wireframe
-          color="#00F0FF"
-          emissive="#00F0FF"
-          emissiveIntensity={0.6}
-          roughness={0.2}
-          metalness={0.8}
-        />
+    <group ref={groupRef}>
+      {/* Primary Cyan Orbital Ring */}
+      <mesh ref={ring1Ref} rotation={[Math.PI / 3, 0.2, 0]}>
+        <torusGeometry args={[2.5, 0.016, 16, 120]} />
+        <meshBasicMaterial color="#00F0FF" transparent opacity={0.65} />
       </mesh>
 
-      {/* Inner Violet Quantum Core */}
-      <mesh ref={coreRef}>
-        <dodecahedronGeometry args={[1.2, 0]} />
-        <meshPhysicalMaterial
-          color="#7928CA"
-          emissive="#8B5CF6"
-          emissiveIntensity={0.8}
-          roughness={0.1}
-          metalness={0.9}
-          transmission={0.4}
-          thickness={1.5}
-        />
+      {/* Secondary Violet Orbital Ring */}
+      <mesh ref={ring2Ref} rotation={[-Math.PI / 3.5, 0.4, 0]}>
+        <torusGeometry args={[2.85, 0.014, 16, 120]} />
+        <meshBasicMaterial color="#8B5CF6" transparent opacity={0.55} />
       </mesh>
 
-      {/* Orbiting Ring */}
-      <mesh rotation={[Math.PI / 3, 0, 0]}>
-        <torusGeometry args={[2.4, 0.015, 16, 100]} />
-        <meshBasicMaterial color="#00F0FF" transparent opacity={0.6} />
-      </mesh>
-
-      <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-        <torusGeometry args={[2.7, 0.01, 16, 100]} />
-        <meshBasicMaterial color="#A78BFA" transparent opacity={0.4} />
+      {/* Tertiary Outer Tilted Ring */}
+      <mesh ref={ring3Ref} rotation={[Math.PI / 6, -Math.PI / 4, 0]}>
+        <torusGeometry args={[3.2, 0.01, 16, 120]} />
+        <meshBasicMaterial color="#22D3EE" transparent opacity={0.35} />
       </mesh>
     </group>
   );
@@ -94,8 +81,7 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
     const colorViolet = new THREE.Color("#8B5CF6");
 
     for (let i = 0; i < count; i++) {
-      // Random distribution within sphere shell
-      const radius = 2.5 + Math.random() * 2.2;
+      const radius = 2.6 + Math.random() * 2.2;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
 
@@ -103,7 +89,7 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
       pos[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       pos[i * 3 + 2] = radius * Math.cos(phi);
 
-      const mixedColor = Math.random() > 0.4 ? colorCyan : colorViolet;
+      const mixedColor = Math.random() > 0.45 ? colorCyan : colorViolet;
       col[i * 3] = mixedColor.r;
       col[i * 3 + 1] = mixedColor.g;
       col[i * 3 + 2] = mixedColor.b;
@@ -113,8 +99,8 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y -= delta * 0.06;
-      pointsRef.current.rotation.x += delta * 0.03;
+      pointsRef.current.rotation.y -= delta * 0.05;
+      pointsRef.current.rotation.x += delta * 0.025;
     }
   });
 
@@ -135,10 +121,10 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.045}
         vertexColors
         transparent
-        opacity={0.8}
+        opacity={0.75}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -148,19 +134,38 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
 export default function Hero3D() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const mouse = useRef<[number, number]>([0, 0]);
+  const mouseRef = useRef<[number, number]>([0, 0]);
 
-  // Check reduced motion
+  // Framer Motion Spring Values for 3D Perspective Tilt
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springConfig = { stiffness: 220, damping: 22 };
+  const mouseXSpring = useSpring(x, springConfig);
+  const mouseYSpring = useSpring(y, springConfig);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["9deg", "-9deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-9deg", "9deg"]);
+  const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-6px", "6px"]);
+  const translateY = useTransform(mouseYSpring, [-0.5, 0.5], ["-6px", "6px"]);
+
+  // Detect Touch & Reduced Motion
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mq.matches);
     const listener = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mq.addEventListener("change", listener);
+
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+      setIsTouchDevice(true);
+    }
+
     return () => mq.removeEventListener("change", listener);
   }, []);
 
-  // Pause rendering when scrolled out of view
+  // Viewport IntersectionObserver to pause rendering when scrolled away
   useEffect(() => {
     if (!containerRef.current) return;
     const observer = new IntersectionObserver(
@@ -174,52 +179,143 @@ export default function Hero3D() {
   }, []);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isTouchDevice || prefersReducedMotion) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-    mouse.current = [x, y];
+    const normalizedX = (e.clientX - rect.left) / rect.width - 0.5;
+    const normalizedY = (e.clientY - rect.top) / rect.height - 0.5;
+
+    x.set(normalizedX);
+    y.set(normalizedY);
+    mouseRef.current = [normalizedX * 2, -normalizedY * 2];
   };
 
-  if (prefersReducedMotion) {
-    return (
-      <div className="w-full h-full min-h-[380px] flex items-center justify-center relative">
-        <div className="w-64 h-64 rounded-full border border-cyan-400/30 bg-gradient-to-br from-cyan-500/10 via-violet-600/10 to-transparent shadow-[0_0_50px_rgba(0,240,255,0.2)] flex items-center justify-center">
-          <div className="w-40 h-40 rounded-full border border-violet-400/40 bg-surface/80 flex items-center justify-center">
-            <span className="font-mono text-xs text-cyan-400 tracking-widest">DOMINIC.SYS</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handlePointerLeave = () => {
+    x.set(0);
+    y.set(0);
+    mouseRef.current = [0, 0];
+  };
 
   return (
     <div
       ref={containerRef}
       onPointerMove={handlePointerMove}
-      className="w-full h-[400px] sm:h-[480px] lg:h-[550px] relative cursor-grab active:cursor-grabbing select-none"
+      onPointerLeave={handlePointerLeave}
+      className="w-full min-h-[460px] sm:min-h-[520px] lg:min-h-[580px] relative flex items-center justify-center select-none"
     >
-      {/* Background ambient circular glow behind 3D object */}
+      {/* Background Ambient Radial Glows */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-        <div className="w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-cyan-500/15 blur-[90px]" />
-        <div className="w-[200px] sm:w-[280px] h-[200px] sm:h-[280px] rounded-full bg-violet-600/20 blur-[80px]" />
+        <div className="w-[320px] sm:w-[420px] h-[320px] sm:h-[420px] rounded-full bg-cyan-500/15 blur-[100px]" />
+        <div className="w-[220px] sm:w-[320px] h-[220px] sm:h-[320px] rounded-full bg-violet-600/20 blur-[90px]" />
       </div>
 
-      {isVisible && (
-        <Canvas
-          camera={{ position: [0, 0, 6], fov: 45 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        >
-          {/* Cyan and Violet Lighting */}
-          <ambientLight intensity={0.4} />
-          <pointLight position={[10, 10, 10]} color="#00F0FF" intensity={1.5} />
-          <pointLight position={[-10, -10, -10]} color="#8B5CF6" intensity={1.8} />
-          <directionalLight position={[0, 5, 5]} color="#FFFFFF" intensity={0.6} />
+      {/* Background 3D Canvas with Orbital Rings & Particles */}
+      {!prefersReducedMotion && isVisible && (
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <Canvas
+            camera={{ position: [0, 0, 6.2], fov: 45 }}
+            dpr={[1, 2]}
+            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+          >
+            <ambientLight intensity={0.5} />
+            <pointLight position={[8, 8, 8]} color="#00F0FF" intensity={1.6} />
+            <pointLight position={[-8, -8, -8]} color="#8B5CF6" intensity={1.8} />
 
-          <GeodesicSphere mouse={mouse} />
-          <ParticleCloud count={160} />
-        </Canvas>
+            <OrbitalRings mouse={mouseRef} />
+            <ParticleCloud count={160} />
+          </Canvas>
+        </div>
       )}
+
+      {/* Foreground 3D Floating Portrait Card */}
+      <motion.div
+        style={{
+          rotateX: prefersReducedMotion ? 0 : rotateX,
+          rotateY: prefersReducedMotion ? 0 : rotateY,
+          x: prefersReducedMotion ? 0 : translateX,
+          y: prefersReducedMotion ? 0 : translateY,
+          transformStyle: "preserve-3d",
+        }}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-[290px] sm:w-[340px] lg:w-[360px]"
+      >
+        {/* Gentle Floating Animation wrapper */}
+        <div className={prefersReducedMotion ? "" : "animate-float"}>
+          {/* Cyberpunk/Obsidian Multi-Layered Glowing Frame */}
+          <div className="relative p-[2px] rounded-3xl bg-gradient-to-br from-cyan-400/80 via-white/10 to-violet-500/80 shadow-[0_0_40px_rgba(0,240,255,0.25),0_0_80px_rgba(139,92,246,0.2)]">
+            {/* Corner Precision Crosshairs */}
+            <span className="absolute -top-1.5 -left-1.5 font-mono text-[10px] text-cyan-400 font-bold z-20">
+              +
+            </span>
+            <span className="absolute -top-1.5 -right-1.5 font-mono text-[10px] text-violet-400 font-bold z-20">
+              +
+            </span>
+            <span className="absolute -bottom-1.5 -left-1.5 font-mono text-[10px] text-violet-400 font-bold z-20">
+              +
+            </span>
+            <span className="absolute -bottom-1.5 -right-1.5 font-mono text-[10px] text-cyan-400 font-bold z-20">
+              +
+            </span>
+
+            {/* Inner Dark Bezel Container */}
+            <div className="bg-[#090D16]/95 backdrop-blur-2xl rounded-[22px] p-3.5 sm:p-4 border border-white/10 relative overflow-hidden flex flex-col">
+              {/* Header Info Bar */}
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[11px] font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-white font-semibold tracking-wider">DOMINIC.SYS</span>
+                </div>
+                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px]">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>VERIFIED</span>
+                </div>
+              </div>
+
+              {/* Portrait Image Container */}
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-950 border border-white/10 shadow-inner group">
+                {/* Dominic's Original Photograph */}
+                <Image
+                  src="/images/dominic-profile.webp"
+                  alt="Dominic Rozario — Full Stack Developer"
+                  width={400}
+                  height={400}
+                  priority
+                  quality={95}
+                  className="w-full h-full object-cover object-top select-none transition-transform duration-500 group-hover:scale-105"
+                />
+
+                {/* Subtle dark vignette at bottom to blend with frame */}
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#090D16] via-[#090D16]/40 to-transparent pointer-events-none" />
+
+                {/* Soft top-edge light reflection */}
+                <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Bottom Footer Metadata */}
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <div>
+                  <div className="font-heading font-bold text-white text-sm">
+                    Dominic Rozario
+                  </div>
+                  <div className="text-[11px] font-mono text-cyan-400">
+                    Full Stack Developer Intern
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <div className="text-[10px] font-mono text-muted-foreground uppercase">
+                    Affiliation
+                  </div>
+                  <div className="text-xs font-semibold text-slate-200">
+                    Bala Labs
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
