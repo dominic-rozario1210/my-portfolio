@@ -77,31 +77,31 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Desktop Floating Dock */}
+      {/* Desktop Floating Rounded Glass Dock */}
       <header
         className={`fixed top-4 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300 ${
-          scrolled ? "py-1" : "py-2"
+          scrolled ? "py-0.5" : "py-1.5"
         }`}
       >
         <nav
           aria-label="Primary Navigation"
-          className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-xl border border-white/10 shadow-glass transition-all duration-300"
+          className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-surface/85 backdrop-blur-2xl border border-white/12 shadow-glass transition-all duration-300"
         >
-          {/* Logo / Badge */}
+          {/* Logo / Brand */}
           <a
             href="#home"
             onClick={(e) => scrollToSection(e, "#home")}
-            className="flex items-center gap-2 pl-2 pr-3 py-1 text-sm font-heading font-semibold text-foreground tracking-wide group"
+            className="flex items-center gap-2 pl-2 pr-3 py-1 text-[15px] sm:text-base font-heading font-bold text-white tracking-wide group"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 group-hover:shadow-[0_0_8px_#00F0FF] transition-all" />
-            <span className="text-white">Dominic</span>
-            <span className="text-cyan-400 text-xs font-mono">.dev</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F28C45] group-hover:shadow-[0_0_10px_#F28C45] transition-all" />
+            <span>Dominic</span>
+            <span className="text-[#F28C45] text-xs font-mono font-semibold">.dev</span>
           </a>
 
-          <div className="h-4 w-[1px] bg-white/10 mx-1" />
+          <div className="h-5 w-[1px] bg-white/15 mx-1" />
 
-          {/* Navigation Links */}
-          <div className="flex items-center gap-0.5">
+          {/* Navigation Links with 14-15px typography and enhanced clarity */}
+          <div className="flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = activeSection === item.href.substring(1);
               const Icon = item.icon;
@@ -110,18 +110,18 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => scrollToSection(e, item.href)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium tracking-wide transition-colors flex items-center gap-1.5 ${
+                  className={`relative px-3.5 py-1.5 rounded-full text-[14.5px] font-semibold tracking-normal transition-colors flex items-center gap-1.5 ${
                     isActive
-                      ? "text-cyan-400 font-semibold"
-                      : "text-muted-foreground hover:text-white"
+                      ? "text-[#F28C45]"
+                      : "text-slate-300 hover:text-white"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.name}</span>
                   {isActive && (
                     <motion.div
                       layoutId="activeDockIndicator"
-                      className="absolute inset-0 rounded-full bg-white/[0.08] border border-cyan-400/30 shadow-[0_0_12px_rgba(0,240,255,0.2)] -z-10"
+                      className="absolute inset-0 rounded-full bg-white/[0.09] border border-[#F28C45]/40 shadow-[0_0_14px_rgba(242,140,69,0.25)] -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -130,36 +130,36 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="h-4 w-[1px] bg-white/10 mx-1" />
+          <div className="h-5 w-[1px] bg-white/15 mx-1" />
 
-          {/* Status Chip */}
+          {/* Available Status Chip - Prominent and readable */}
           <a
             href="#contact"
             onClick={(e) => scrollToSection(e, "#contact")}
-            className="flex items-center gap-2 pl-3 pr-2.5 py-1 text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full hover:bg-emerald-500/20 transition-colors"
+            className="flex items-center gap-2 pl-3 pr-3.5 py-1.5 text-xs font-mono font-medium text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 rounded-full hover:bg-emerald-500/25 transition-colors shadow-sm"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
             <span>Available</span>
           </a>
         </nav>
 
         {/* Mobile Top Bar */}
-        <div className="flex md:hidden w-full max-w-lg items-center justify-between px-4 py-2.5 rounded-2xl bg-surface/90 backdrop-blur-xl border border-white/10 shadow-glass">
+        <div className="flex md:hidden w-full max-w-lg items-center justify-between px-4 py-3 rounded-2xl bg-surface/90 backdrop-blur-2xl border border-white/12 shadow-glass">
           <a
             href="#home"
             onClick={(e) => scrollToSection(e, "#home")}
-            className="flex items-center gap-2 text-sm font-heading font-semibold text-foreground"
+            className="flex items-center gap-2 text-base font-heading font-bold text-white tracking-wide"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F28C45] shadow-[0_0_8px_#F28C45]" />
             <span>Dominic Rozario</span>
           </a>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+            className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5 text-cyan-400" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#F28C45]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </header>
@@ -172,9 +172,9 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-4 top-20 z-50 p-4 rounded-2xl bg-surface-light/95 backdrop-blur-2xl border border-white/15 shadow-2xl md:hidden flex flex-col gap-1"
+            className="fixed inset-x-4 top-20 z-50 p-4 rounded-2xl bg-surface-light/95 backdrop-blur-2xl border border-white/15 shadow-2xl md:hidden flex flex-col gap-1.5"
           >
-            <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider px-3 py-1">
+            <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider px-3 py-1 font-medium">
               Navigation
             </div>
             {navItems.map((item) => {
@@ -185,26 +185,26 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => scrollToSection(e, item.href)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+                  className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-[15px] font-semibold transition-all ${
                     isActive
-                      ? "bg-cyan-500/15 text-cyan-400 font-semibold border border-cyan-400/30"
-                      : "text-foreground hover:bg-white/5"
+                      ? "bg-[#F28C45]/15 text-[#F28C45] border border-[#F28C45]/35 shadow-sm"
+                      : "text-slate-200 hover:bg-white/5 hover:text-white"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.name}</span>
                 </a>
               );
             })}
 
-            <div className="pt-2 mt-2 border-t border-white/10 flex items-center justify-between px-3">
+            <div className="pt-2.5 mt-2 border-t border-white/10 flex items-center justify-between px-3">
               <span className="text-xs text-muted-foreground font-mono">Bala Labs Intern</span>
               <a
                 href="#contact"
                 onClick={(e) => scrollToSection(e, "#contact")}
-                className="text-xs text-cyan-400 font-medium hover:underline flex items-center gap-1"
+                className="text-xs text-[#F28C45] font-semibold hover:underline flex items-center gap-1"
               >
-                Get in Touch <ExternalLink className="w-3 h-3" />
+                Get in Touch <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </motion.div>

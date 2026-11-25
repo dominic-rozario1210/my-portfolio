@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #05050a;
+  --background: #211a17;
   --foreground: #f8fafc;
 }
 
@@ -23,30 +23,30 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Burnt Orange Theme */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #05050a;
+  background: #211a17;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #3e2e27;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #523d34;
 }
 
 /* Glassmorphism helpers */
 .glass-panel {
-  background: rgba(14, 19, 31, 0.65);
+  background: rgba(48, 35, 29, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-panel-hover {
@@ -54,28 +54,30 @@ body {
 }
 
 .glass-panel-hover:hover {
-  border-color: rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.2);
+  border-color: rgba(242, 140, 69, 0.4);
+  box-shadow: 0 0 25px -5px rgba(242, 140, 69, 0.3);
   transform: translateY(-2px);
 }
 
 /* Subtle dot grid matrix background */
 .matrix-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(242, 140, 69, 0.08) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
 /* Glow lines */
-.glow-cyan {
-  text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+.glow-cyan,
+.glow-orange {
+  text-shadow: 0 0 12px rgba(242, 140, 69, 0.5);
 }
 
-.glow-violet {
-  text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+.glow-violet,
+.glow-apricot {
+  text-shadow: 0 0 12px rgba(255, 192, 120, 0.5);
 }
 
 /* Focus styles */
 *:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #05050a, 0 0 0 4px #00f0ff;
+  box-shadow: 0 0 0 2px #211a17, 0 0 0 4px #f28c45;
 }
